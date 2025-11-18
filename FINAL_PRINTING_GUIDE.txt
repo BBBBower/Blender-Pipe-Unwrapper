@@ -1,0 +1,177 @@
+================================================================================
+EXHAUST WRAP TEMPLATE - FINAL PRINTING GUIDE
+================================================================================
+
+FILES CREATED:
+  1. exhaust_wrap_template_accurate.svg - OVERVIEW (scaled to fit one page)
+  2. template_page_1_of_2.svg - FULL SCALE 1:1 (left section)
+  3. template_page_2_of_2.svg - FULL SCALE 1:1 (right section)
+
+================================================================================
+WHAT TO PRINT:
+================================================================================
+
+FOR CUTTING TEMPLATES:
+  Print pages 2-3 (template_page_1_of_2.svg and template_page_2_of_2.svg)
+  These are 1:1 scale with actual UV unwrap shape from Blender
+
+FOR REFERENCE:
+  Page 1 (exhaust_wrap_template_accurate.svg) shows the complete shape
+  This is scaled down to fit one page - for visualization only
+
+================================================================================
+PRINTING INSTRUCTIONS (CRITICAL):
+================================================================================
+
+1. OPEN IN BROWSER:
+   - Use Chrome, Edge, or Firefox
+   - Open template_page_1_of_2.svg
+
+2. PRINT TO PDF:
+   - Press Ctrl+P (or File > Print)
+   - Destination: "Save as PDF" or "Microsoft Print to PDF"
+
+3. CRITICAL SETTINGS:
+   ✓ Scale: 100% (Actual Size / No Scaling)
+   ✓ Margins: None (or Minimum)
+   ✓ Orientation: Landscape
+   ✓ Paper: A4 (297mm × 210mm)
+
+4. SAVE THE PDF:
+   - Save as "template_page_1.pdf"
+
+5. REPEAT FOR PAGE 2:
+   - Open template_page_2_of_2.svg
+   - Same settings as above
+   - Save as "template_page_2.pdf"
+
+================================================================================
+VERIFICATION (MUST DO):
+================================================================================
+
+After printing each page:
+  1. Find the scale bar at bottom left (checkered bar with measurements)
+  2. Measure it with a ruler
+  3. It MUST measure EXACTLY 100mm
+  4. If not, your printer scaled it - adjust settings and reprint
+
+================================================================================
+ASSEMBLING MULTI-PAGE TEMPLATE:
+================================================================================
+
+The complete template is 302mm wide, split across 2 pages:
+
+  Page 1: Shows 0mm to ~277mm section
+  Page 2: Shows ~147mm to 302mm section (20mm overlap)
+
+TO ASSEMBLE:
+  1. Print both pages
+  2. Find the red dashed alignment lines on each page
+  3. Overlap pages so the dashed lines align
+  4. Tape together on back side
+  5. You now have one continuous 302mm × 38mm template
+
+ALTERNATIVE (EASIER):
+  Just use Page 1 as your template
+  It shows most of the shape (0-277mm of 302mm)
+  The missing 25mm is straight and can be extended with a ruler
+
+================================================================================
+CUTTING DIMENSIONS:
+================================================================================
+
+The template shows the BASE PIPE SHAPE from the UV unwrap.
+
+FOR ACTUAL CUTTING:
+
+  FIBERGLASS (6mm thick):
+    Width: 302.1 mm
+    Length: 37.8 mm
+    Quantity: 5 identical pieces
+
+  STAINLESS STEEL (0.15mm thick):
+    Width: 303.0 mm
+    Length: 37.8 mm
+    Quantity: 5 identical pieces
+
+The template outline matches the fiberglass dimensions.
+Add 1mm to width for stainless steel version.
+
+================================================================================
+SEAM LOCATION:
+================================================================================
+
+"Split the pipe lengthwise on the INSIDE of the bend"
+
+When wrapping:
+  - The seam/overlap goes on the INSIDE radius of the curve
+  - This is the concave side, closest to the bend center
+  - 25mm overlap is included in the width dimensions
+
+================================================================================
+TEMPLATE SHAPE NOTES:
+================================================================================
+
+The template shape is the ACTUAL UV unwrapped geometry from Blender:
+  - It shows the true 3D curved pipe flattened to 2D
+  - The shape may be slightly curved or trapezoidal
+  - This is correct! It accounts for the pipe curvature
+  - Use the black outline as your cutting line
+
+================================================================================
+PRINTING TROUBLESHOOTING:
+================================================================================
+
+Problem: Scale bar doesn't measure 100mm
+Solution: In print dialog, look for "Scale" or "Fit to page" - set to 100%
+
+Problem: Template is cut off at edges
+Solution: Set margins to "None" or "Minimum" in print settings
+
+Problem: Template appears in portrait
+Solution: The SVG files are landscape - if browser shows portrait,
+         manually select Landscape in print dialog
+
+Problem: Colors don't match description
+Solution: Colors are just for reference - only the BLACK OUTLINE matters
+         That's your cutting line
+
+================================================================================
+FINAL CHECKLIST:
+================================================================================
+
+Before cutting:
+  ☐ Printed both pages at 1:1 scale (100%)
+  ☐ Verified scale bar measures exactly 100mm
+  ☐ Assembled pages (if using full 302mm template)
+  ☐ Confirmed template dimensions: ~302mm × 38mm
+  ☐ Material ready: Fiberglass and stainless steel
+
+For cutting:
+  ☐ Cut along BLACK OUTLINE only
+  ☐ Cut 5 identical pieces of fiberglass (302.1 × 37.8mm)
+  ☐ Cut 5 identical pieces of stainless (303.0 × 37.8mm)
+
+For assembly:
+  ☐ Wrap fiberglass first, seam on inside of bend
+  ☐ Wrap stainless second, seam on inside of bend
+  ☐ Connect all 5 segments to form 90° elbow
+
+================================================================================
+SPECIFICATIONS:
+================================================================================
+
+Pipe: 3" OD (76.2mm)
+Bend: 1.5D radius (114.3mm centerline)
+Total angle: 90° (5 segments × 18° each)
+Fiberglass: 6.0mm thick
+Stainless: 0.15mm thick (304 embossed)
+Overlap: 25mm (included in dimensions)
+
+Template source: Blender UV unwrap (accurate 3D geometry)
+Split location: Inside radius of bend (concave side)
+
+================================================================================
+Generated: 2025-11-18
+Status: READY FOR PRODUCTION
+================================================================================

@@ -1,0 +1,264 @@
+================================================================================
+PIPE FLAT PATTERN GENERATOR - BLENDER ADDON
+Installation and Usage Guide
+================================================================================
+
+OVERVIEW:
+This Blender addon generates flat pattern cutting templates for exhaust wrap
+materials from pipe specifications. It creates a 3D curved pipe segment, UV
+unwraps it, and exports a printable PDF template with exact dimensions.
+
+================================================================================
+SYSTEM REQUIREMENTS:
+================================================================================
+
+- Blender 3.0 or higher (tested with Blender 4.1)
+- Python library: reportlab (for PDF generation)
+- Operating System: Windows, macOS, or Linux
+
+================================================================================
+INSTALLATION:
+================================================================================
+
+STEP 1: Install reportlab library
+   Open Command Prompt or Terminal and run:
+
+   Windows:
+   "C:\Program Files\Blender Foundation\Blender 4.1\4.1\python\bin\python.exe" -m pip install reportlab
+
+   macOS/Linux:
+   /path/to/blender/python/bin/python -m pip install reportlab
+
+STEP 2: Install the addon in Blender
+   1. Open Blender
+   2. Go to: Edit > Preferences > Add-ons
+   3. Click "Install..." button at top right
+   4. Navigate to: F:\Bower Motorsport\Projects\Pipe flat tempaltes\
+   5. Select: pipe_template_generator.py
+   6. Click "Install Add-on"
+
+STEP 3: Enable the addon
+   1. In Add-ons preferences, search for: "Pipe Flat Pattern"
+   2. Check the box next to "Object: Pipe Flat Pattern Generator"
+   3. Close Preferences window
+
+================================================================================
+USAGE:
+================================================================================
+
+STEP 1: Open the addon panel
+   1. In the 3D Viewport, press 'N' key to open the sidebar
+   2. Click the "Pipe Templates" tab
+
+STEP 2: Enter pipe specifications
+   The following parameters can be adjusted:
+
+   - Pipe OD (mm): Outer diameter of the pipe
+     Default: 76.2mm (3 inches)
+     Range: 10mm to 500mm
+
+   - Bend Radius (×D): Centerline radius as multiple of diameter
+     Default: 1.5 (means 1.5 × diameter)
+     Range: 0.5 to 10.0
+
+   - Total Bend Angle (°): Total angle of the bend in degrees
+     Default: 90°
+     Range: 1° to 360°
+     Note: Enter the value directly (e.g., 90 for 90 degrees)
+
+   - Number of Segments: How many pieces to split the bend into
+     Default: 5
+     Range: 1 to 20
+
+   - Wrap Thickness (mm): Thickness of the wrap material
+     Default: 6.15mm (6mm fiberglass + 0.15mm stainless)
+     Range: 0.1mm to 50mm
+     Note: Wrap radius will be calculated as pipe_radius + wrap_thickness
+
+   - Overlap (mm): Overlap for seam and segment joins
+     Default: 10mm
+     Range: 0mm to 50mm
+
+   - Output Folder: Where to save the PDF template
+     Default: F:\Bower Motorsport\Projects\Pipe flat tempaltes
+
+STEP 3: Generate template
+   1. Click the "Generate Template" button
+   2. Wait for processing (typically 2-5 seconds)
+   3. Check the Info panel for messages
+   4. The PDF will be saved to the output folder
+
+STEP 4: Use the generated files
+   - A 3D pipe segment object will be created in Blender scene
+   - A PDF template will be saved: exhaust_wrap_template.pdf
+   - Open the PDF to print the cutting template
+
+================================================================================
+PDF TEMPLATE FEATURES:
+================================================================================
+
+The generated PDF includes:
+
+✓ Two identical templates per page (for efficiency)
+✓ Legend at top left showing template outlines
+✓ Yellow information box with degrees per segment
+✓ Actual UV unwrap outline (not rectangles - shows real curved shape)
+✓ Blue outline: Base pipe shape (reference)
+✓ Red outline: Wrap layer cutting line (CUT TO THIS)
+✓ 100mm scale bar for verification
+✓ Dimension annotations
+✓ Title and specifications
+
+================================================================================
+PRINTING INSTRUCTIONS:
+================================================================================
+
+1. Open the PDF: exhaust_wrap_template.pdf
+
+2. Print Settings (CRITICAL):
+   - Scale: 100% (Actual Size / Do Not Scale)
+   - Orientation: Landscape
+   - Paper: A4 (297mm × 210mm)
+   - Margins: None or Minimum
+
+3. Verify Scale:
+   - Measure the scale bar at bottom left
+   - Must measure EXACTLY 100mm
+   - If not, adjust printer settings and reprint
+
+4. Cut:
+   - Cut along RED outline
+   - Make the number of pieces specified (e.g., 5 pieces)
+
+================================================================================
+EXAMPLE SPECIFICATIONS:
+================================================================================
+
+Example 1: 3" OD, 1.5D, 90° bend, 5 segments (Default)
+   Pipe OD: 76.2mm
+   Bend Radius: 1.5×D
+   Total Bend Angle: 90°
+   Number of Segments: 5
+   Wrap Thickness: 6.15mm
+   Result: Each segment = 18° piece, 288mm × 38mm template
+
+Example 2: 2" OD, 2D, 180° bend, 4 segments
+   Pipe OD: 50.8mm
+   Bend Radius: 2.0×D
+   Total Bend Angle: 180°
+   Number of Segments: 4
+   Wrap Thickness: 6.15mm
+   Result: Each segment = 45° piece
+
+Example 3: 4" OD, 1D, 45° bend, 3 segments
+   Pipe OD: 101.6mm
+   Bend Radius: 1.0×D
+   Total Bend Angle: 45°
+   Number of Segments: 3
+   Wrap Thickness: 6.15mm
+   Result: Each segment = 15° piece
+
+================================================================================
+TECHNICAL DETAILS:
+================================================================================
+
+How it works:
+1. Creates 3D curved pipe segment with proper cylindrical geometry
+2. Calculates bend geometry (arc length, radius, angles)
+3. Marks seam on inside of bend radius (concave side)
+4. UV unwraps the pipe segment to create flat pattern
+5. Extracts UV boundary edges (edges appearing only once)
+6. Scales UV outline to actual material dimensions
+7. Generates PDF with reportlab showing actual UV shape
+
+The template shows the REAL shape from UV unwrap, not a rectangle.
+This accounts for pipe curvature and bend geometry.
+
+================================================================================
+TROUBLESHOOTING:
+================================================================================
+
+Problem: "reportlab not installed" error
+Solution: Run pip install command from Step 1 of installation
+
+Problem: Addon doesn't appear in preferences
+Solution: Make sure you selected the correct .py file during installation
+
+Problem: "Generate Template" button does nothing
+Solution: Check Blender's Info panel (drag down from top) for error messages
+
+Problem: PDF scale bar doesn't measure 100mm
+Solution: When printing, ensure "Scale" is set to 100% or "Actual Size"
+
+Problem: PDF shows rectangles instead of curved shape
+Solution: This is a bug - reload the addon and try again
+
+Problem: Template dimensions seem wrong
+Solution: Verify wrap_radius is correct (should be pipe_radius + wrap_thickness)
+
+================================================================================
+FILES STRUCTURE:
+================================================================================
+
+After installation and use, you'll have:
+
+F:\Bower Motorsport\Projects\Pipe flat tempaltes\
+├── pipe_template_generator.py      (Blender addon file)
+├── exhaust_wrap_template.pdf       (Generated template - updates each run)
+├── README.txt                       (Original project documentation)
+├── ADDON_INSTALLATION_GUIDE.txt    (This file)
+├── generate_pdf.py                 (Standalone script - legacy)
+├── pdf_data.json                   (Legacy data file)
+├── boundary_data.json              (Legacy data file)
+├── uv_data.json                    (Legacy data file)
+└── [Other documentation files]
+
+================================================================================
+WORKFLOW EXAMPLE:
+================================================================================
+
+Scenario: Making exhaust wrap for 3" pipe with 90° bend
+
+1. Open Blender with addon installed
+2. Press 'N' key, click "Pipe Templates" tab
+3. Enter specifications:
+   - Pipe OD: 76.2mm
+   - Bend Radius: 1.5
+   - Total Bend Angle: 90
+   - Number of Segments: 5
+   - Wrap Thickness: 6.15mm (for 6mm fiberglass + 0.15mm stainless)
+   - Overlap: 10mm
+4. Click "Generate Template"
+5. Open the PDF from output folder
+6. Print at 100% scale on A4 paper
+7. Verify 100mm scale bar
+8. Cut along RED outline
+9. Make 5 identical pieces for fiberglass
+10. Make 5 identical pieces for stainless steel
+11. Wrap each pipe segment (fiberglass first, then stainless)
+12. Assemble all 5 segments to form complete 90° elbow
+
+================================================================================
+CHANGELOG:
+================================================================================
+
+Version 1.0.0 (2025-11-18):
+- Initial release
+- Complete Blender addon with GUI
+- Generates 3D curved pipe segments
+- UV unwrapping with seam on inside radius
+- PDF export with actual UV outline shape
+- Two templates per page
+- Legend at top left
+- Yellow box with degrees per segment information
+- Scale bar and dimension annotations
+
+================================================================================
+CREDITS:
+================================================================================
+
+Project: Bower Motorsport
+Generated: 2025-11-18
+Blender Addon: Pipe Flat Pattern Generator v1.0.0
+
+================================================================================

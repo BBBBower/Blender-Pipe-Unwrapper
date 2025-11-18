@@ -1,0 +1,259 @@
+================================================================================
+PIPE FLAT PATTERN GENERATOR - UPDATE LOG
+Recent Fixes and Improvements
+================================================================================
+
+DATE: 2025-11-19
+VERSION: 1.1.0
+
+================================================================================
+FIXES APPLIED:
+================================================================================
+
+1. UV OUTLINE RENDERING FIXED
+   Problem: UV outlines were messy with 320+ boundary edges
+   Cause: Too many seam edges (160) being marked incorrectly
+   Solution:
+   - Fixed seam marking to only mark edges along ground plane (Z≈0)
+   - Seam now placed at minimum radius (closest to origin)
+   - Kept original edge direction for proper boundary extraction
+   Result: Clean outlines with 88 boundary edges, 12 seam edges
+
+2. DEGREES PER SEGMENT RELOCATED
+   Problem: Degrees info was in yellow box in middle of page
+   Requested: Move to title, remove yellow box
+   Solution:
+   - Updated subtitle to show: "76.2mm OD | 1.5D 90° Bend | 18.0° per segment"
+   - Removed yellow information box entirely
+   - Cleaner page layout with info in header
+   Result: Degrees per segment now in title, yellow box removed
+
+3. SEAM LOCATION UPDATED
+   Problem: Seam was on inside of bend radius (confusing)
+   Requested: Seam along ground plane, closest to origin
+   Solution:
+   - Changed seam marking logic to find minimum radius in XY plane
+   - Mark edges where Z≈0 and radius≈minimum
+   - More intuitive seam placement
+   Result: Seam now on ground plane at point closest to origin
+
+4. WRAP THICKNESS INPUT IMPROVED
+   Problem: User had to calculate wrap radius manually
+   Requested: Input wrap thickness in mm instead
+   Solution:
+   - Changed "Wrap Radius" to "Wrap Thickness"
+   - Default: 6.15mm (6mm fiberglass + 0.15mm stainless)
+   - Automatic calculation: wrap_radius = pipe_radius + wrap_thickness
+   Result: More intuitive input, automatic radius calculation
+
+5. ANGLE INPUT FIXED
+   Problem: Had to enter 5000+ to get 90 degrees
+   Cause: subtype='ANGLE' made Blender treat input as radians
+   Solution:
+   - Removed subtype='ANGLE' from bend_angle property
+   - Added degree symbol (°) to field name
+   - Increased max range from 180° to 360°
+   Result: Enter 90 to get 90 degrees (works correctly now)
+
+6. CONTEXT ERROR FIXED
+   Problem: "Operator bpy.ops.object.select_all.poll() failed, context is incorrect"
+   Cause: Using bpy.ops.object.select_all() which requires specific context
+   Solution:
+   - Replaced ALL operator calls with direct API calls
+   - In create_pipe_segment: Use direct bpy.data.objects.remove()
+   - In unwrap_pipe_segment: Loop through objects for deselection
+   - Ensure object mode before any mode changes
+   Result: Template generation works reliably from ANY context (object/edit mode)
+
+================================================================================
+TECHNICAL IMPROVEMENTS:
+================================================================================
+
+Seam Detection:
+- OLD: 160 seam edges (too many)
+- NEW: 12 seam edges (correct)
+
+UV Boundary:
+- OLD: 320 edges (messy)
+- NEW: 88 edges (clean)
+
+PDF Size:
+- OLD: 21KB (with mesh fill and yellow box)
+- NEW: 7.6KB (clean outlines only)
+
+Template Dimensions (with new wrap thickness):
+- Width: 288.0mm (vs 283.9mm previously)
+- Height: 37.8mm (same)
+- More accurate for 6.15mm wrap thickness
+
+================================================================================
+CURRENT SPECIFICATIONS:
+================================================================================
+
+Default Values:
+  Pipe OD: 76.2mm (3 inches)
+  Bend Radius: 1.5×D
+  Bend Angle: 90°
+  Number of Segments: 5 (18° each)
+  Wrap Thickness: 6.15mm
+  Overlap: 10mm
+
+Generated Template:
+  Width: 288.0mm
+  Height: 37.8mm
+  Two templates per page
+  Clean UV outlines (88 boundary edges)
+  Proper seam placement (12 edges on ground plane)
+
+PDF Features:
+  ✓ Two identical templates per page
+  ✓ Legend at top left
+  ✓ Degrees per segment in title
+  ✓ Clean UV outline shapes (no mesh fill)
+  ✓ 100mm scale bar for verification
+  ✓ Blue outline: base pipe (reference)
+  ✓ Red outline: wrap layer (cutting line)
+  ✓ Dimension annotations
+
+================================================================================
+VERIFICATION TESTS:
+================================================================================
+
+Angle Input Test:
+  45° → 9.0° per segment ✓
+  90° → 18.0° per segment ✓
+  135° → 27.0° per segment ✓
+  180° → 36.0° per segment ✓
+
+Wrap Thickness Calculation:
+  Pipe radius: 38.1mm (76.2mm / 2)
+  Wrap thickness: 6.15mm
+  Calculated wrap radius: 44.25mm ✓
+
+Context Handling:
+  Generate from OBJECT mode: ✓
+  Generate from EDIT mode: ✓
+  Multiple consecutive generations: ✓
+  Different configurations: ✓
+
+Test Configurations:
+  3" OD, 90°, 5 segments (18° each): ✓
+  2" OD, 45°, 3 segments (15° each): ✓
+  4" OD, 180°, 6 segments (30° each): ✓
+
+UV Quality:
+  Seam edges: 12 ✓
+  Boundary edges: 88 ✓
+  Single UV island: ✓
+
+================================================================================
+FILES UPDATED:
+================================================================================
+
+Primary:
+  pipe_template_generator.py - All fixes applied
+  exhaust_wrap_template.pdf - Generated with new settings
+
+Documentation:
+  ADDON_INSTALLATION_GUIDE.txt - Updated parameters
+  UPDATE_LOG.txt - This file (new)
+
+================================================================================
+REMAINING FEATURES:
+================================================================================
+
+Current addon capabilities:
+✓ Any pipe OD (10-500mm)
+✓ Any bend radius (0.5D to 10D)
+✓ Any bend angle (1° to 360°)
+✓ Any number of segments (1 to 20)
+✓ Custom wrap thickness (0.1mm to 50mm)
+✓ Custom overlap (0mm to 50mm)
+✓ GUI interface in Blender
+✓ One-click PDF generation
+✓ Two templates per page
+✓ Clean UV outline rendering
+✓ Automatic dimension calculation
+✓ Scale verification bar
+
+Future enhancements (optional):
+- Batch generation for multiple segments
+- Export to DXF/SVG for CNC cutting
+- Material database presets
+- 3D preview of assembled pipe
+- Multiple wrap layer support
+- Automatic nesting optimization
+- Save/load preset configurations
+
+================================================================================
+USAGE NOTES:
+================================================================================
+
+To use the updated addon:
+
+1. Open Blender
+2. Press 'N' key in 3D viewport
+3. Click "Pipe Templates" tab
+4. Enter specifications:
+   - Pipe OD in mm (e.g., 76.2 for 3")
+   - Bend Radius as multiplier (e.g., 1.5 for 1.5D)
+   - Bend Angle in degrees (e.g., 90 for 90°)
+   - Number of segments (e.g., 5)
+   - Wrap thickness in mm (e.g., 6.15)
+   - Overlap in mm (e.g., 10)
+5. Click "Generate Template"
+6. Open PDF from output folder
+7. Print at 100% scale
+8. Verify 100mm scale bar
+9. Cut along red outline
+
+================================================================================
+TROUBLESHOOTING:
+================================================================================
+
+If you encounter issues:
+
+1. Angle not working correctly:
+   - Make sure you enter the value in degrees (e.g., 90 for 90°)
+   - Don't use radians or other units
+
+2. Context error when generating:
+   - Addon now handles this automatically
+   - Should work from any mode or context
+
+3. UV outline looks messy:
+   - This has been fixed in v1.1.0
+   - Reload the addon to get the fix
+
+4. Wrap dimensions seem wrong:
+   - Check wrap thickness value
+   - Should be total thickness (all layers combined)
+   - Example: 6mm fiberglass + 0.15mm stainless = 6.15mm
+
+5. PDF doesn't show proper scale:
+   - Print at 100% scale (Actual Size)
+   - Verify 100mm scale bar with ruler
+   - If wrong, check printer settings
+
+================================================================================
+PROJECT STATUS:
+================================================================================
+
+Version: 1.1.0
+Status: ✓ PRODUCTION READY
+Date: 2025-11-19
+
+All reported issues have been fixed:
+✓ UV outlines cleaned up
+✓ Degrees per segment in title
+✓ Yellow box removed
+✓ Seam on ground plane
+✓ Wrap thickness input
+✓ Angle input fixed
+✓ Context errors resolved
+
+The addon is fully functional and ready for use.
+
+================================================================================
+END OF UPDATE LOG
+================================================================================

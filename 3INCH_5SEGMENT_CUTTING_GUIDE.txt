@@ -1,0 +1,112 @@
+================================================================================
+EXHAUST WRAP CUTTING GUIDE - 5 SEGMENT 90° BEND
+================================================================================
+
+PIPE SPECIFICATION:
+  - Outer Diameter: 76.2mm (3 inches)
+  - Bend Radius: 1.5D (114.3mm centerline)
+  - Total Angle: 90°
+  - Segments: 5 (each 18°)
+
+MATERIAL SPECIFICATION:
+  - Fiberglass Insulation: 6.0mm thick
+  - Stainless Steel Sheet: 0.15mm thick (304 embossed)
+  - Overlap: 25mm
+
+================================================================================
+CUTTING DIMENSIONS - ALL 5 SEGMENTS ARE IDENTICAL
+================================================================================
+
+FIBERGLASS LAYER:
+  Cut Size: 302.1 mm × 37.8 mm
+  In Inches: 11.89" × 1.49"
+  Quantity: 5 identical pieces
+  Total Area: 0.0571 m²
+
+STAINLESS STEEL LAYER:
+  Cut Size: 303.0 mm × 37.8 mm
+  In Inches: 11.93" × 1.49"
+  Quantity: 5 identical pieces
+  Total Area: 0.0573 m²
+
+================================================================================
+WHAT TO CUT:
+================================================================================
+
+Cut 5 pieces of fiberglass @ 302.1 mm × 37.8 mm
+Cut 5 pieces of stainless  @ 303.0 mm × 37.8 mm
+
+All pieces are identical - make one template and cut 5 copies!
+
+================================================================================
+ASSEMBLY INSTRUCTIONS:
+================================================================================
+
+1. Each segment covers 18° of the bend
+2. Wrap fiberglass first (302.1 × 37.8mm) around each curved pipe segment
+3. Ensure 25mm overlap along the seam
+4. Wrap stainless steel second (303.0 × 37.8mm) over the fiberglass
+5. Ensure 25mm overlap along the seam
+6. Connect all 5 wrapped segments to form the complete 90° elbow
+
+================================================================================
+SEGMENT BREAKDOWN:
+================================================================================
+
+Segment 1: 0° to 18° - Same template
+Segment 2: 18° to 36° - Same template
+Segment 3: 36° to 54° - Same template
+Segment 4: 54° to 72° - Same template
+Segment 5: 72° to 90° - Same template
+
+================================================================================
+TECHNICAL NOTES:
+================================================================================
+
+WIDTH CALCULATION:
+  - Fiberglass wraps at diameter: 76.2 + (2×6.0) = 88.2mm
+  - Circumference: π × 88.2 = 277.1mm
+  - With 25mm overlap = 302.1mm
+
+  - Stainless wraps at diameter: 88.2 + (2×0.15) = 88.5mm
+  - Circumference: π × 88.5 = 278.0mm
+  - With 25mm overlap = 303.0mm
+
+LENGTH CALCULATION:
+  - Each segment spans 18° (π/10 radians)
+  - Fiberglass layer radius: 114.3 + 6.0 = 120.3mm
+  - Arc length: 120.3 × (π/10) = 37.79mm
+
+  - Stainless layer radius: 114.3 + 6.0 + 0.15 = 120.45mm
+  - Arc length: 120.45 × (π/10) = 37.84mm
+
+================================================================================
+BLENDER 3D MODEL:
+================================================================================
+
+The Blender file contains:
+  ✓ 5 separate 3D curved pipe segments (color-coded)
+  ✓ Each segment is UV unwrapped to show the flat pattern
+  ✓ Switch to "UV Editing" workspace to see unwrapped templates
+  ✓ Press Numpad 0 to see camera view of the assembled elbow
+
+Camera and lighting have been added for better visualization.
+
+================================================================================
+QUICK REFERENCE:
+================================================================================
+
+FOR EACH SEGMENT:
+  Fiberglass: 302mm × 38mm (12" × 1.5")
+  Stainless:  303mm × 38mm (12" × 1.5")
+
+TOTAL FOR COMPLETE 90° BEND:
+  5 pieces fiberglass @ 302 × 38mm
+  5 pieces stainless @ 303 × 38mm
+
+All segments identical - easy to batch cut!
+
+================================================================================
+Generated: 2025-11-18
+Status: ✓ READY FOR PRODUCTION
+================================================================================
