@@ -377,11 +377,35 @@ class PIPE_OT_GenerateTemplate(Operator):
 
         # PDF setup
         page_w, page_h = landscape(A4)
+        margin = 15 * mm
+        max_template_width = page_w - 2 * margin  # Maximum width that fits on page
+
+        # Check if template needs to be split across multiple pages
+        split_overlap = 20  # mm overlap for joining pages
+        needs_split = wrap_w > (max_template_width / mm - 20)  # Leave some margin
 
         pdf_path = os.path.join(props.output_folder, "exhaust_wrap_template.pdf")
         c = pdf_canvas.Canvas(pdf_path, pagesize=landscape(A4))
 
-        margin = 15 * mm
+        if needs_split:
+            # Template too wide - split across multiple pages
+            self._generate_split_pages(c, props, boundary_edges, min_u, max_u, min_v, max_v,
+                                      base_w, base_h, wrap_w, wrap_h, overlap, segment_angle,
+                                      split_overlap, page_w, page_h, margin, blue, red, black)
+        else:
+            # Template fits on single page - use two templates layout
+            self._generate_single_page(c, props, boundary_edges, min_u, max_u, min_v, max_v,
+                                       base_w, base_h, wrap_w, wrap_h, overlap, segment_angle,
+                                       page_w, page_h, margin, blue, red, black)
+
+        c.save()
+        self.report({'INFO'}, f"PDF saved to: {pdf_path}")
+
+    def _generate_single_page(self, c, props, boundary_edges, min_u, max_u, min_v, max_v,
+                             base_w, base_h, wrap_w, wrap_h, overlap, segment_angle,
+                             page_w, page_h, margin, blue, red, black):
+        """Generate single page with two templates"""
+        from reportlab.lib.units import mm
 
         # Two templates per page (top and bottom)
         template_positions = [
@@ -509,9 +533,191 @@ class PIPE_OT_GenerateTemplate(Operator):
         c.drawString(margin, 5*mm, "Print: 100% scale | Landscape | A4 | Verify scale bar | Cut along RED outline")
 
         c.showPage()
-        c.save()
 
-        self.report({'INFO'}, f"PDF saved to: {pdf_path}")
+    def _generate_split_pages(self, c, props, boundary_edges, min_u, max_u, min_v, max_v,
+                              base_w, base_h, wrap_w, wrap_h, overlap, segment_angle,
+                              split_overlap, page_w, page_h, margin, blue, red, black):
+        """Generate split pages when template is too wide"""
+        from reportlab.lib.units import mm
+        from reportlab.lib.colors import HexColor
+
+        # Calculate split point and widths
+        center_w = wrap_w / 2
+        left_width = center_w + split_overlap
+        right_width = center_w + split_overlap
+
+        # PAGE 1: Left half (0 to center + overlap)
+        self._draw_split_page(c, props, boundary_edges, min_u, max_u, min_v, max_v,
+                             base_w, base_h, wrap_w, wrap_h, overlap, segment_angle,
+                             0, left_width, center_w, split_overlap,
+                             "LEFT HALF (1 of 2)", page_w, page_h, margin, blue, red, black, True)
+
+        # PAGE 2: Right half (center - overlap to end)
+        self._draw_split_page(c, props, boundary_edges, min_u, max_u, min_v, max_v,
+                             base_w, base_h, wrap_w, wrap_h, overlap, segment_angle,
+                             center_w - split_overlap, wrap_w, center_w, split_overlap,
+                             "RIGHT HALF (2 of 2)", page_w, page_h, margin, blue, red, black, False)
+
+    def _draw_split_page(self, c, props, boundary_edges, min_u, max_u, min_v, max_v,
+                        base_w, base_h, wrap_w, wrap_h, overlap, segment_angle,
+                        x_start, x_end, center_w, split_overlap,
+                        page_label, page_w, page_h, margin, blue, red, black, is_left):
+        """Draw one page of a split template"""
+        from reportlab.lib.units import mm
+        from reportlab.lib.colors import HexColor
+
+        section_width = x_end - x_start
+        template_y = page_h / 2 - (wrap_h * mm) / 2
+
+        # Title
+        c.setFont("Helvetica-Bold", 14)
+        c.drawCentredString(page_w/2, page_h - 15*mm, "EXHAUST WRAP CUTTING TEMPLATE")
+
+        c.setFont("Helvetica-Bold", 11)
+        c.setFillColor(HexColor("#CC0000"))
+        c.drawCentredString(page_w/2, page_h - 28*mm, page_label)
+        c.setFillColor(black)
+
+        c.setFont("Helvetica", 10)
+        c.drawCentredString(page_w/2, page_h - 40*mm,
+                           f"{props.pipe_od:.1f}mm OD | {props.bend_radius_multiplier:.1f}D {props.bend_angle:.0f}° Bend | {segment_angle:.1f}° per segment")
+
+        # Legend
+        legend_x = margin
+        legend_y = page_h - 55*mm
+
+        c.setFont("Helvetica-Bold", 9)
+        c.drawString(legend_x, legend_y, f"TEMPLATE SIZE: {wrap_w:.0f}mm × {wrap_h:.0f}mm (FULL)")
+        c.setFont("Helvetica", 8)
+        c.drawString(legend_x, legend_y - 10*mm, f"This section: {section_width:.0f}mm × {wrap_h:.0f}mm")
+        c.drawString(legend_x, legend_y - 18*mm, f"Overlap zone: {split_overlap}mm")
+
+        c.setFont("Helvetica-Bold", 8)
+        c.setFillColor(HexColor("#CC0000"))
+        c.drawString(legend_x, legend_y - 30*mm, "JOIN PAGES AT CENTERLINE (dashed green)")
+        c.setFillColor(black)
+
+        # Calculate template position (centered)
+        template_x = (page_w - section_width * mm) / 2
+
+        # Draw base pipe outline (blue) - clipped to section
+        c.setStrokeColor(blue)
+        c.setLineWidth(1.0)
+        base_offset_x = (wrap_w - base_w) / 2
+        base_offset_y = (wrap_h - base_h) / 2
+
+        for edge in boundary_edges:
+            v1, v2 = edge
+            u1, v1_coord = v1
+            u2, v2_coord = v2
+
+            u1_norm = (u1 - min_u) / (max_u - min_u) if (max_u - min_u) > 0 else 0
+            v1_norm = (v1_coord - min_v) / (max_v - min_v) if (max_v - min_v) > 0 else 0
+            u2_norm = (u2 - min_u) / (max_u - min_u) if (max_u - min_u) > 0 else 0
+            v2_norm = (v2_coord - min_v) / (max_v - min_v) if (max_v - min_v) > 0 else 0
+
+            x1_mm = v1_norm * base_w + base_offset_x
+            y1_mm = u1_norm * base_h + base_offset_y
+            x2_mm = v2_norm * base_w + base_offset_x
+            y2_mm = u2_norm * base_h + base_offset_y
+
+            # Clip to section
+            if (x_start <= x1_mm <= x_end or x_start <= x2_mm <= x_end or
+                (x1_mm < x_start and x2_mm > x_end) or (x2_mm < x_start and x1_mm > x_end)):
+                x1_pt = template_x + (x1_mm - x_start) * mm
+                y1_pt = template_y + y1_mm * mm
+                x2_pt = template_x + (x2_mm - x_start) * mm
+                y2_pt = template_y + y2_mm * mm
+                c.line(x1_pt, y1_pt, x2_pt, y2_pt)
+
+        # Draw wrap layer outline (red) - clipped to section
+        c.setStrokeColor(red)
+        c.setLineWidth(2.0)
+
+        for edge in boundary_edges:
+            v1, v2 = edge
+            u1, v1_coord = v1
+            u2, v2_coord = v2
+
+            u1_norm = (u1 - min_u) / (max_u - min_u) if (max_u - min_u) > 0 else 0
+            v1_norm = (v1_coord - min_v) / (max_v - min_v) if (max_v - min_v) > 0 else 0
+            u2_norm = (u2 - min_u) / (max_u - min_u) if (max_u - min_u) > 0 else 0
+            v2_norm = (v2_coord - min_v) / (max_v - min_v) if (max_v - min_v) > 0 else 0
+
+            x1_mm = v1_norm * wrap_w
+            y1_mm = u1_norm * wrap_h
+            x2_mm = v2_norm * wrap_w
+            y2_mm = u2_norm * wrap_h
+
+            # Clip to section
+            if (x_start <= x1_mm <= x_end or x_start <= x2_mm <= x_end or
+                (x1_mm < x_start and x2_mm > x_end) or (x2_mm < x_start and x1_mm > x_end)):
+                x1_pt = template_x + (x1_mm - x_start) * mm
+                y1_pt = template_y + y1_mm * mm
+                x2_pt = template_x + (x2_mm - x_start) * mm
+                y2_pt = template_y + y2_mm * mm
+                c.line(x1_pt, y1_pt, x2_pt, y2_pt)
+
+        # Draw centerline (green dashed)
+        centerline_x = template_x + (center_w - x_start) * mm
+        c.setStrokeColor(HexColor("#00AA00"))
+        c.setLineWidth(1.5)
+        c.setDash(5, 3)
+        c.line(centerline_x, template_y, centerline_x, template_y + wrap_h * mm)
+        c.setDash()  # Reset to solid
+
+        # Centerline label
+        c.setFillColor(HexColor("#00AA00"))
+        c.setFont("Helvetica-Bold", 8)
+        c.drawString(centerline_x + 2*mm, template_y + wrap_h * mm + 2*mm, "CENTERLINE")
+        c.setFillColor(black)
+
+        # Draw overlap zone markers
+        c.setStrokeColor(HexColor("#FFA500"))
+        c.setLineWidth(0.5)
+        if is_left:
+            # Mark right edge overlap zone
+            overlap_x = template_x + (center_w + split_overlap - x_start) * mm
+            c.rect(overlap_x - split_overlap * mm, template_y, split_overlap * mm, wrap_h * mm)
+            c.setFont("Helvetica", 6)
+            c.drawString(overlap_x - split_overlap * mm / 2 - 8*mm, template_y - 5*mm, f"{split_overlap}mm overlap")
+        else:
+            # Mark left edge overlap zone
+            overlap_x = template_x
+            c.rect(overlap_x, template_y, split_overlap * mm, wrap_h * mm)
+            c.setFont("Helvetica", 6)
+            c.drawString(overlap_x + split_overlap * mm / 2 - 8*mm, template_y - 5*mm, f"{split_overlap}mm overlap")
+
+        c.setStrokeColor(black)
+
+        # Scale bar
+        scale_x = margin
+        scale_y = margin
+        scale_len = 100 * mm
+
+        c.setLineWidth(1.5)
+        c.rect(scale_x, scale_y, scale_len, 10*mm)
+        c.setFillColor(black)
+        c.rect(scale_x, scale_y, scale_len/2, 10*mm, fill=1, stroke=0)
+
+        c.setLineWidth(1)
+        c.line(scale_x, scale_y, scale_x, scale_y - 5*mm)
+        c.line(scale_x + scale_len/2, scale_y, scale_x + scale_len/2, scale_y - 5*mm)
+        c.line(scale_x + scale_len, scale_y, scale_x + scale_len, scale_y - 5*mm)
+
+        c.setFont("Helvetica", 8)
+        c.drawString(scale_x, scale_y - 10*mm, "0")
+        c.drawString(scale_x + scale_len/2 - 10*mm, scale_y - 10*mm, "50mm")
+        c.drawString(scale_x + scale_len - 18*mm, scale_y - 10*mm, "100mm")
+
+        c.setFont("Helvetica-Bold", 9)
+        c.drawString(scale_x + scale_len + 5*mm, scale_y + 3*mm, "← MUST MEASURE 100mm EXACTLY")
+
+        # Footer
+        c.setFont("Helvetica", 7)
+        c.drawString(margin, 5*mm, f"Print: 100% scale | Landscape | A4 | {page_label} | Join at GREEN centerline")
+
+        c.showPage()
 
 # ============================================================================
 # Panel

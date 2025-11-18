@@ -2,7 +2,7 @@
 
 A Blender addon that generates accurate flat pattern cutting templates for pipe wrapping materials. Create professional PDF templates for any pipe specification with a simple GUI interface.
 
-![Version](https://img.shields.io/badge/version-1.1.0-blue)
+![Version](https://img.shields.io/badge/version-1.2.0-blue)
 ![Blender](https://img.shields.io/badge/blender-3.0%2B-orange)
 ![License](https://img.shields.io/badge/license-MIT-green)
 
@@ -13,7 +13,9 @@ A Blender addon that generates accurate flat pattern cutting templates for pipe 
 - 📐 **Accurate UV Unwrapping**: Uses Blender's 3D geometry for precise flat patterns
 - 📄 **Professional PDFs**: Generates print-ready templates with scale bars and dimensions
 - ⚡ **Fast Generation**: Creates templates in seconds
-- 🔄 **Two Templates Per Page**: Efficient printing with dual templates
+- 🔄 **Smart Page Splitting**: Automatically splits oversized templates across multiple A4 pages with overlap zones
+- 📏 **Alignment Guides**: Green dashed centerlines and orange overlap markers for easy assembly
+- ✂️ **Two Templates Per Page**: Efficient printing with dual templates (when template fits)
 
 ## Use Cases
 
@@ -73,8 +75,9 @@ Open a terminal/command prompt and run:
 
 ## Template Output
 
-The generated PDF includes:
+The generated PDF automatically adapts based on template size:
 
+### Single-Page Layout (templates ≤247mm wide)
 - **Two identical templates per page** for efficient printing
 - **Blue outline**: Base pipe shape (reference)
 - **Red outline**: Cutting line for wrap materials
@@ -83,12 +86,28 @@ The generated PDF includes:
 - **Legend**: Clear identification of outlines
 - **Title**: Shows pipe specs and degrees per segment
 
-### Example Template
+### Split-Page Layout (templates >247mm wide)
+When the template is too wide for a single A4 sheet, it automatically splits across 2 pages:
+- **Page 1**: LEFT HALF (1 of 2) - Left side with overlap zone
+- **Page 2**: RIGHT HALF (2 of 2) - Right side with overlap zone
+- **Green dashed centerline**: Alignment guide for joining pages
+- **Orange overlap zone** (20mm): Marked on each page for gluing/taping
+- **Full dimensions shown**: Total template size displayed on both pages
+- **Scale bar on each page**: Independent verification per sheet
 
-For a 3" OD pipe with 1.5D radius, 90° bend, 5 segments:
+### Example Templates
+
+**Small Template (40mm OD pipe):**
+- Template dimensions: 155mm × 22mm
+- Fits on single page with two templates
+
+**Standard Template (3" / 76mm OD pipe):**
 - Template dimensions: 288mm × 38mm
-- Degrees per segment: 18°
-- Two templates printed on A4 landscape
+- Automatically splits across 2 pages with 20mm overlap
+
+**Large Template (6" / 150mm OD pipe):**
+- Template dimensions: 520mm × 48mm
+- Splits across 2 pages, each showing ~280mm width
 
 ## Parameters Explained
 
@@ -184,7 +203,19 @@ When printing the PDF template:
 
 ## Assembly
 
-For each segment:
+### For Split-Page Templates
+
+If your template was split across multiple pages:
+
+1. **Print both pages** at 100% scale
+2. **Verify scale bars** on each page (must measure exactly 100mm)
+3. **Trim pages** leaving the overlap zone intact
+4. **Align the green centerlines** - they should overlap perfectly
+5. **Tape or glue** in the 20mm overlap zone (marked in orange)
+6. You now have one complete template
+
+### For Each Segment
+
 1. Wrap fiberglass layer first
 2. Position seam on inside of bend (concave side)
 3. Ensure proper overlap
@@ -260,6 +291,15 @@ Blender-Pipe-Unwrapper/
 ```
 
 ## Version History
+
+### v1.2.0 (2025-11-19)
+- **NEW**: Automatic split-page support for oversized templates (>247mm width)
+- Split templates across 2 A4 pages with 20mm overlap zone
+- Green dashed centerline for easy page alignment
+- Orange overlap zone markers for joining guidance
+- Each page labeled clearly (LEFT HALF / RIGHT HALF)
+- Scale bar on every page for independent verification
+- Automatic detection - no user configuration needed
 
 ### v1.1.0 (2025-11-19)
 - Fixed UV outline rendering (reduced from 320 to 88 boundary edges)
