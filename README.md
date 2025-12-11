@@ -289,6 +289,12 @@ MIT License - See LICENSE file for details
 
 - Built with Blender Python API and reportlab
 
+## Support Development
+
+Support ongoing development across all my projects:
+
+[![GitHub Sponsors](https://img.shields.io/badge/Sponsor-GitHub-181717?logo=github)](https://github.com/sponsors/bowermotorsport)
+[![Ko-fi](https://img.shields.io/badge/Donate-Ko--fi-29ABE0?logo=ko-fi&logoColor=white)](https://ko-fi.com/bowermotorsport)
 
 ## Screenshots
 
